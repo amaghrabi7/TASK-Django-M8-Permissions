@@ -5,6 +5,8 @@ from rest_framework import generics
 from flights import serializers
 from flights.models import Booking, Flight
 
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+
 
 class FlightsList(generics.ListAPIView):
     queryset = Flight.objects.all()
@@ -13,6 +15,7 @@ class FlightsList(generics.ListAPIView):
 
 class BookingsList(generics.ListAPIView):
     serializer_class = serializers.BookingSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         today = datetime.date.today()
@@ -46,6 +49,7 @@ class CancelBooking(generics.DestroyAPIView):
 
 class BookFlight(generics.CreateAPIView):
     serializer_class = serializers.AdminUpdateBookingSerializer
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user, flight_id=self.kwargs["flight_id"])
