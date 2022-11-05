@@ -3,7 +3,7 @@ from rest_framework import generics
 from flights import serializers
 from flights.models import Booking, Flight
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from .permissions import IsBookingOwner
+from .permissions import IsBookingOwner, IsOverThreeDays
 
 
 class FlightsList(generics.ListAPIView):
@@ -32,7 +32,7 @@ class UpdateBooking(generics.RetrieveUpdateAPIView):
     queryset = Booking.objects.all()
     lookup_field = "id"
     lookup_url_kwarg = "booking_id"
-    permission_classes = [IsAuthenticated, IsBookingOwner]
+    permission_classes = [IsAuthenticated, IsBookingOwner, IsOverThreeDays]
 
     def get_serializer_class(self):
         if self.request.user.is_staff:
@@ -45,7 +45,7 @@ class CancelBooking(generics.DestroyAPIView):
     queryset = Booking.objects.all()
     lookup_field = "id"
     lookup_url_kwarg = "booking_id"
-    permission_classes = [IsAuthenticated, IsBookingOwner]
+    permission_classes = [IsAuthenticated, IsBookingOwner, IsOverThreeDays]
 
 
 class BookFlight(generics.CreateAPIView):
